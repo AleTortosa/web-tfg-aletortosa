@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from .models import Ciudad, Resena
 from django.contrib.auth.decorators import login_required
+
 
 def home(request):
     return render(request, 'home.html')
@@ -78,27 +79,23 @@ def perfil_view(request):
 def editar_perfil_view(request):
     ciudades = Ciudad.objects.all()
     user = request.user
+    mensaje = None
     if request.method == "POST":
         user.first_name = request.POST.get("nombre")
         user.last_name = request.POST.get("apellidos")
         user.email = request.POST.get("email")
         ciudad_id = request.POST.get("ciudad_local")
-        nueva_ciudad = Ciudad.objects.get(id=ciudad_id) if ciudad_id else None
-        # Si cambia de ciudad, pierde la verificación
-        if user.ciudad_local != nueva_ciudad:
-            user.verificado = False
-        user.ciudad_local = nueva_ciudad
-        # Solo guarda la foto si se sube y no está verificado
-        if not user.verificado:
-            if request.FILES.get("dni_foto_frontal"):
-                user.dni_foto_frontal = request.FILES["dni_foto_frontal"]
-            if request.FILES.get("dni_foto_trasera"):
-                user.dni_foto_trasera = request.FILES["dni_foto_trasera"]
-        user.save()        
-        return redirect("perfil")
-    return render(request, "editar_perfil.html", {"user": user, "ciudades": ciudades})
+        user.ciudad_local = Ciudad.objects.get(id=ciudad_id) if ciudad_id else None
+        user.save()
+        mensaje = "Datos actualizados correctamente."
+    return render(request, "editar_perfil.html", {"user": user, "ciudades": ciudades, "mensaje": mensaje})
 
 @login_required
 def mis_resenas_view(request):
     mis_resenas = Resena.objects.filter(usuario=request.user)
     return render(request, "mis_resenas.html", {"mis_resenas": mis_resenas})
+
+@login_required
+def resena_detalle_view(request, resena_id):
+    resena = get_object_or_404(Resena, id=resena_id, usuario=request.user)
+    return render(request, "resena_detalle.html", {"resena": resena})

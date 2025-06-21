@@ -12,4 +12,5 @@ urlpatterns = [
     path('registro/', views.registro_view, name='registro'),
     path('perfil/editar/', views.editar_perfil_view, name='editar_perfil'),
     path('perfil/resenas/', views.mis_resenas_view, name='mis_resenas'),
+    path('resena/<int:resena_id>/', views.resena_detalle_view, name='resena_detalle'),
 ]

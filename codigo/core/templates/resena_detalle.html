@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de reseña{% endblock %}
+{% block content %}
+<section class="login-section">
+    <div class="resena-detalle-card">
+        <h2>Reseña de {{ resena.evento.nombre }}</h2>
+        {% if resena.imagenes.all %}
+            <div class="imagenes-resena">
+                {% for img in resena.imagenes.all %}
+                    <img src="{{ img.imagen.url }}" class="img-resena-lista"
+                        alt="Imagen de la reseña"
+                        onclick="mostrarModal(this.src)">
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="resena-info">
+            <p><strong>Puntuación:</strong> {{ resena.puntuacion }}/5</p>
+            <p><strong>Descripción:</strong> {{ resena.descripcion }}</p>
+            <p><strong>Fecha:</strong> {{ resena.fecha|date:"d/m/Y H:i" }}</p>
+        </div>
+        <p class="login-link"><a href="{% url 'mis_resenas' %}">Volver a mis reseñas</a></p>
+    </div>
+
+    <!-- Modal para imagen ampliada -->
+    <div id="modal-img" class="modal-img" onclick="cerrarModal()" style="display:none;">
+        <span class="modal-cerrar">&times;</span>
+        <img class="modal-contenido" id="img-ampliada">
+    </div>
+    <script>
+    function mostrarModal(src) {
+        document.getElementById('modal-img').style.display = 'flex';
+        document.getElementById('img-ampliada').src = src;
+    }
+    function cerrarModal() {
+        document.getElementById('modal-img').style.display = 'none';
+    }
+    </script>
+
+</section>
+{% endblock %}

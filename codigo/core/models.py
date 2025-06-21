@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Ciudad(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -38,9 +39,9 @@ class Resena(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     descripcion = models.TextField()
-    puntuacion = models.PositiveSmallIntegerField()  # de 1 a 5
+    puntuacion = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     fecha = models.DateTimeField(auto_now_add=True)
-    imagen = models.ImageField(upload_to='resenas/', null=True, blank=True)
+    #imagen = models.ImageField(upload_to='resenas/', null=True, blank=True) # De momento comentada por la creación de ResenaImagen
 
     def save(self, *args, **kwargs):
         # Solo permitir reseñas de usuarios verificados y de su ciudad
@@ -50,3 +51,10 @@ class Resena(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.evento} ({self.puntuacion})"
+    
+class ResenaImagen(models.Model):
+    resena = models.ForeignKey(Resena, related_name='imagenes', on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='resenas/')
+
+    def __str__(self):
+        return f"Imagen de {self.resena}"

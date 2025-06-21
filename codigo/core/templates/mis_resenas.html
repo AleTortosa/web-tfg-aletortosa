@@ -8,8 +8,10 @@
             <ul class="lista-resenas">
                 {% for resena in mis_resenas %}
                     <li>
-                        <strong>{{ resena.evento.nombre }}</strong>:
-                        {{ resena.descripcion|truncatechars:60 }} ({{ resena.puntuacion }}/5)
+                        <a href="{% url 'resena_detalle' resena.id %}">                        
+                            <strong>{{ resena.evento.nombre }}</strong>:
+                            {{ resena.descripcion|truncatechars:60 }} ({{ resena.puntuacion }}/5)
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
