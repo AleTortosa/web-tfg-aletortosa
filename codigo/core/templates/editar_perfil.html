@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Editar perfil{% endblock %}
+{% block content %}
+<section class="login-section">
+    <div class="login-card">
+        <h2>Editar perfil</h2>        
+        <form method="post" class="login-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="nombre" placeholder="Nombre" required class="input-login" value="{{ user.first_name }}">
+            <input type="text" name="apellidos" placeholder="Apellidos" required class="input-login" value="{{ user.last_name }}">
+            <input type="email" name="email" placeholder="Email" required class="input-login" value="{{ user.email }}">
+            <select name="ciudad_local" class="input-login" id="ciudad_local">
+                <option value="">Selecciona tu ciudad (opcional)</option>
+                {% for ciudad in ciudades %}
+                    <option value="{{ ciudad.id }}" {% if user.ciudad_local and ciudad.id == user.ciudad_local.id %}selected{% endif %}>{{ ciudad.nombre }}</option>
+                {% endfor %}
+            </select>
+            <div id="dni_foto_div_delantera">
+                <label for="dni_foto_frontal">Foto del DNI delantera (solo necesario para verificación):</label>
+                <input type="file" name="dni_foto_frontal" class="input-login" id="dni_foto_frontal">
+            </div>
+            <div id="dni_foto_div_trasera">
+                <label for="dni_foto_trasera">Foto del DNI trasera:</label>
+                <input type="file" name="dni_foto_trasera" class="input-login" id="dni_foto_trasera">
+            </div>
+            <button type="submit" class="login-btn">Guardar cambios</button>
+        </form>
+        <p class="login-link" style="margin-top: 18px;">
+            <a href="{% url 'perfil' %}">Volver al perfil</a>
+        </p>
+    </div>
+</section>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ciudadSelect = document.getElementById('ciudad_local');
+    const dniDiv = document.getElementById('dni_foto_div_delantera');
+    const dniDivTrasera = document.getElementById('dni_foto_div_trasera');
+    const userVerificado = "{{ user.verificado|yesno:'true,false' }}" === "true";
+    function toggleDniDiv() {
+        if (ciudadSelect.value && !userVerificado) {
+            dniDiv.style.display = 'block';
+            dniDivTrasera.style.display = 'block';
+        } else {
+            dniDiv.style.display = 'none';
+            dniDivTrasera.style.display = 'none';
+        }
+    }
+    ciudadSelect.addEventListener('change', toggleDniDiv);
+    toggleDniDiv();
+});
+</script>
+{% endblock %}

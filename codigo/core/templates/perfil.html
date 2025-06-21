@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Perfil{% endblock %}
+{% block content %}
+<section class="perfil-section">
+    <div class="perfil-card">
+        <h2>Hola, {{ user.username }}</h2>
+        <div class="perfil-info">
+            <p><strong>Nombre:</strong> {{ user.first_name|default:"-" }}</p>
+            <p><strong>Apellidos:</strong> {{ user.last_name|default:"-" }}</p>
+            <p><strong>Email:</strong> {{ user.email|default:"-" }}</p>
+            <p><strong>Ciudad local:</strong> {{ user.ciudad_local|default:"-" }}</p>
+            <p><strong>Verificado:</strong>
+                <span class="verificado-estado {{ user.verificado|yesno:'verificado,no-verificado' }}">
+                    {% if user.verificado %}
+                        Sí
+                    {% elif user.dni_foto_frontal and user.dni_foto_trasera %}
+                        Pendiente
+                    {% else %}
+                        No
+                    {% endif %}
+                </span>
+                <span class="tooltip-icon">?
+                    <span class="tooltip-text">
+                        Estar verificado solo es necesario para poner reseñas.<br>
+                        Puedes usar la app sin estarlo.
+                    </span>
+                </span>
+            </p>
+        </div>
+        <div class="perfil-botones">
+            <a href="{% url 'editar_perfil' %}" class="login-btn btn-editar">Editar perfil</a>
+            <a href="{% url 'mis_resenas' %}" class="login-btn btn-resenas">Mis reseñas</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="login-btn logout-btn">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

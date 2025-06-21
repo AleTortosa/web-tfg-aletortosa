@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Mis reseñas{% endblock %}
+{% block content %}
+<section class="login-section">
+    <div class="login-card">
+        <h2>Mis reseñas</h2>
+        {% if mis_resenas %}
+            <ul class="lista-resenas">
+                {% for resena in mis_resenas %}
+                    <li>
+                        <strong>{{ resena.evento.nombre }}</strong>:
+                        {{ resena.descripcion|truncatechars:60 }} ({{ resena.puntuacion }}/5)
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No has escrito ninguna reseña aún.</p>
+        {% endif %}
+        <p class="login-link"><a href="{% url 'perfil' %}">Volver al perfil</a></p>
+    </div>
+</section>
+{% endblock %}

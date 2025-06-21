@@ -1,0 +1,23 @@
+# Archivos generados por LaTeX que no se deben versionar
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.nav
+*.snm
+*.pdf
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+.env
+media/

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi web{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+</head>
+<body>
+    <!--Menú -->
+    <header>
+        <nav class="navbar">
+            <div class="navbar-section">
+                <a href="/"><img src="{% static 'logo.png' %}" alt="Logo" class="logo"></a>
+            </div>
+            <div class="navbar-section navbar-center">
+                <a href="/resenas/">Reseñas</a>
+                <a href="/explorar/">Explorar</a>
+                <a href="/favoritos/">Favoritos</a>
+            </div>
+            <div class="navbar-section">
+                {% if user.is_authenticated %}
+                    <a href="/perfil/" class="login-btn">{{ user.username }}</a>
+                {% else %}
+                    <a href="/login/" class="login-btn">Iniciar sesión</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido de cada página -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Mi TFG</p>
+    </footer>
+</body>
+</html>

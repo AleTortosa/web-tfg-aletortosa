@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <!-- Buscador -->
+    <section class="buscador-home">
+        <form action="/buscar/" method="get">
+            <input type="text" name="q" placeholder="Busca una ciudad, lugar o experiencia..." class="input-buscador">
+            <button type="submit" class="btn-buscar">Buscar</button>
+        </form>
+    </section>
+
+    <!-- Carrusel de imágenes -->
+    <section class="carrusel-home">
+        <div class="carrusel" id="carrusel">
+            <img src="{% static 'valencia.jpg' %}" alt="Valencia" class="carrusel-img active">
+            <img src="{% static 'madrid.jpg' %}" alt="Madrid" class="carrusel-img">
+            <img src="{% static 'granada.jpg' %}" alt="Granada" class="carrusel-img">
+        </div>
+        <div class="carrusel-titulo" id="carrusel-titulo">
+            <span>Valencia</span>
+        </div>
+        <div class="carrusel-indicadores" id="carrusel-indicadores">
+            <span class="indicador active" data-idx="0"></span>
+            <span class="indicador" data-idx="1"></span>
+            <span class="indicador" data-idx="2"></span>
+        </div>
+    </section>
+
+    <section class="noticias-home">
+        <div class="noticia">
+            <img src="{% static 'valencia.jpg' %}" alt="Noticia 1">
+            <div class="noticia-texto">
+                <h3>Nuevo mirador en Valencia</h3>
+                <p>Descubre el nuevo mirador con vistas panorámicas a la ciudad.</p>
+            </div>
+        </div>
+        <div class="noticia">
+            <img src="{% static 'madrid.jpg' %}" alt="Noticia 2">
+            <div class="noticia-texto">
+                <h3>Festival gastronómico en Madrid</h3>
+                <p>Madrid acoge el mayor festival de comida local este verano.</p>
+            </div>
+        </div>
+        <div class="noticia">
+            <img src="{% static 'granada.jpg' %}" alt="Noticia 3">
+            <div class="noticia-texto">
+                <h3>Granada, destino cultural</h3>
+                <p>Granada elegida como uno de los mejores destinos culturales de 2025.</p>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <script>
+        // Carrusel JS sencillo
+        const imgs = document.querySelectorAll('.carrusel-img');
+        const titulo = document.getElementById('carrusel-titulo').querySelector('span');
+        const nombres = ["Valencia", "Madrid", "Granada"];
+        const indicadores = document.querySelectorAll('.indicador');
+        let idx = 0;
+
+        function showSlide(n) {
+            imgs.forEach((img, i) => {
+                img.classList.toggle('active', i === n);
+            });
+            titulo.textContent = nombres[n];
+            indicadores.forEach((ind, i) => {
+                ind.classList.toggle('active', i === n);
+            });
+        }
+
+        indicadores.forEach((ind, i) => {
+            ind.onclick = () => {
+                idx = i;
+                showSlide(idx);
+            };
+        });
+
+        // Opcional: auto-carrusel
+        setInterval(() => {
+            idx = (idx + 1) % imgs.length;
+            showSlide(idx);
+        }, 4000);
+
+        showSlide(idx);
+    </script>
+{% endblock %}
