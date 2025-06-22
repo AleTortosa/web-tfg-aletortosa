@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from .models import Ciudad, Resena
+from .models import Ciudad, Resena, Evento, Etiqueta
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 def home(request):
@@ -57,9 +58,6 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def resenas_view(request):
-    return render(request, "resenas.html")
-
 def favoritos_view(request):
     return render(request, "favoritos.html")
 
@@ -99,3 +97,75 @@ def mis_resenas_view(request):
 def resena_detalle_view(request, resena_id):
     resena = get_object_or_404(Resena, id=resena_id, usuario=request.user)
     return render(request, "resena_detalle.html", {"resena": resena})
+
+def resenas_view(request):
+    busca = request.GET.get('busca', '').strip()
+    etiquetas_ids = request.GET.getlist('etiquetas')
+    etiquetas = Etiqueta.objects.all()
+
+    ciudades = []
+    eventos = Evento.objects.all().select_related('ciudad')
+
+    if etiquetas_ids:
+        # Si hay etiquetas seleccionadas, solo filtramos eventos por etiquetas (y opcionalmente por nombre)
+        eventos = eventos.filter(etiquetas__id__in=etiquetas_ids)
+        if busca:
+            eventos = eventos.filter(nombre__icontains=busca)
+        ciudades_destacadas = []
+        ciudades = []
+    else:
+        # Si no hay etiquetas, mostramos ciudades y eventos según búsqueda
+        if not busca:
+            ciudades_destacadas = Ciudad.objects.all()[:6]
+        else:
+            ciudades_destacadas = []
+            ciudades = Ciudad.objects.filter(nombre__icontains=busca)
+            eventos = eventos.filter(nombre__icontains=busca)
+
+    eventos = eventos.distinct()
+
+    return render(request, "resenas.html", {
+        "ciudades": ciudades,
+        "eventos": eventos,
+        "etiquetas": etiquetas,
+        "etiquetas_seleccionadas": etiquetas_ids,
+        "busca": busca,
+        "ciudades_destacadas": ciudades_destacadas,
+    })
+
+def ciudades_view(request):
+    busca = request.GET.get('busca', '').strip()
+    if busca:
+        ciudades = Ciudad.objects.filter(nombre__icontains=busca)
+    else:
+        ciudades = Ciudad.objects.all()
+    return render(request, "ciudades.html", {"ciudades": ciudades, "busca": busca})
+
+def eventos_por_ciudad_view(request, ciudad_id):
+    ciudad = get_object_or_404(Ciudad, id=ciudad_id)
+    busca = request.GET.get('busca', '').strip()
+    etiquetas_ids = request.GET.getlist('etiquetas')
+    eventos = ciudad.evento_set.all()
+    etiquetas = Etiqueta.objects.all()  # <-- Añade esto
+
+    if busca:
+        eventos = eventos.filter(nombre__icontains=busca)
+    if etiquetas_ids:
+        eventos = eventos.filter(etiquetas__id__in=etiquetas_ids).distinct()
+
+    return render(request, "eventos_por_ciudad.html", {
+        "ciudad": ciudad,
+        "eventos": eventos,
+        "busca": busca,
+        "etiquetas": etiquetas,  # <-- Añade esto
+        "etiquetas_seleccionadas": etiquetas_ids,
+    })
+
+def detalle_evento_view(request, evento_id):
+    from .models import Evento  # Asegúrate de importar Evento si no lo tienes arriba
+    evento = get_object_or_404(Evento, id=evento_id)
+    reseñas = evento.resena_set.all()
+    return render(request, "detalle_evento.html", {
+        "evento": evento,
+        "reseñas": reseñas
+    })

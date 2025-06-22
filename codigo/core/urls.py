@@ -13,4 +13,7 @@ urlpatterns = [
     path('perfil/editar/', views.editar_perfil_view, name='editar_perfil'),
     path('perfil/resenas/', views.mis_resenas_view, name='mis_resenas'),
     path('resena/<int:resena_id>/', views.resena_detalle_view, name='resena_detalle'),
+    path('ciudades/', views.ciudades_view, name='ciudades'),
+    path('ciudad/<int:ciudad_id>/eventos/', views.eventos_por_ciudad_view, name='eventos_por_ciudad'),
+    path('evento/<int:evento_id>/', views.detalle_evento_view, name='detalle_evento'),
 ]

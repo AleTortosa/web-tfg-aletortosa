@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Ciudades{% endblock %}
+{% block content %}
+<h2>Buscar ciudad</h2>
+<form method="get">
+    <input type="text" name="busca" placeholder="Buscar ciudad..." value="{{ busca }}">
+    <button type="submit">Buscar</button>
+</form>
+<ul>
+    {% for ciudad in ciudades %}
+        <li>
+            <a href="{% url 'eventos_por_ciudad' ciudad.id %}">{{ ciudad.nombre }}</a>
+        </li>
+    {% empty %}
+        <li>No hay ciudades que coincidan.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

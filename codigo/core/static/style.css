@@ -606,3 +606,194 @@ footer {
     }
 }
 /* fin Ampliar imagenes de reseña */
+
+/* Zona de reseñas
+-------------------------------------------------- */
+
+/* Tarjeta ciudades destacadas */
+.tarjetas-ciudades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.tarjeta-ciudad {
+    background: #e0f7fa;
+    border-radius: 14px;
+    padding: 18px 32px;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.10);
+    text-align: center;
+    transition: transform 0.15s;
+}
+.tarjeta-ciudad:hover {
+    transform: scale(1.04);
+    background: #b2ebf2;
+}
+.tarjeta-ciudad a {
+    color: var(--primario);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Tarjetas para resultados de ciudades y eventos */
+.resultados-bloque {
+    margin: 32px 0 24px 0;
+}
+
+.tarjetas-resultados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.tarjeta-resultado {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 32px;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.10);
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    min-width: 220px;
+    max-width: 320px;
+    flex: 1 1 220px;
+    border: 2px solid #e0f7fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tarjeta-resultado:hover {
+    transform: scale(1.04);
+    background: #e0f7fa;
+    box-shadow: 0 4px 24px rgba(1,112,154,0.13);
+    border-color: var(--primario);
+}
+.tarjeta-resultado a {
+    color: var(--primario);
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 600;
+    width: 100%;
+    display: block;
+}
+
+/* Filtros avanzados para reseñas */
+.filtros-avanzados {
+    background: #fafdff;
+    border: 1.5px solid #b2ebf2;
+    padding: 18px 28px;
+    border-radius: 14px;
+    margin-top: 14px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.07);
+    max-width: 420px;
+}
+.filtros-avanzados label {
+    margin-right: 18px;
+    font-size: 1.05rem;
+    color: var(--gris);
+}
+.filtros-avanzados button[type="submit"] {
+    background: var(--primario);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    margin-top: 10px;
+    margin-right: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.filtros-avanzados button[type="submit"]:hover {
+    background: var(--secundario);
+}
+.filtros-avanzados button[type="button"] {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    margin-top: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.filtros-avanzados button[type="button"]:hover {
+    background: #b2ebf2;
+    color: var(--secundario);
+}
+
+/* Buscador principal de reseñas */
+.buscador-reseñas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.buscador-reseñas input[type="text"] {
+    flex: 1 1 220px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1.5px solid var(--primario);
+    font-size: 1.1rem;
+    outline: none;
+    background: #fafdff;
+    color: var(--primario);
+    margin-right: 8px;
+}
+.buscador-reseñas button[type="submit"] {
+    background: var(--primario);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.buscador-reseñas button[type="submit"]:hover {
+    background: var(--secundario);
+}
+.buscador-reseñas button[type="button"] {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.buscador-reseñas button[type="button"]:hover {
+    background: #b2ebf2;
+    color: var(--secundario);
+}
+
+.titulo-eventos-ciudad {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.btn-salir {
+    background: #e57373;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+    cursor: pointer;
+}
+.btn-salir:hover {
+    background: #c62828;
+    color: #fff;
+}
+
+/* Fin Zona de reseñas */

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}{{ evento.nombre }}{% endblock %}
+{% block content %}
+<h2>{{ evento.nombre }}</h2>
+<p>Ciudad: {{ evento.ciudad.nombre }}</p>
+<h3>Reseñas</h3>
+<ul>
+    {% for resena in reseñas %}
+        <li>
+            {{ resena.usuario.username }}: {{ resena.descripcion }} ({{ resena.puntuacion }}/5)
+        </li>
+    {% empty %}
+        <li>No hay reseñas para este evento.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
