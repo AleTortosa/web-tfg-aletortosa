@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Perfil{% endblock %}
+{% block title %}Favoritos{% endblock %}
 {% block content %}
-<h1> Favoritos </h1>
+<h1>Mis eventos favoritos</h1>
+<div class="tarjetas-resultados">
+    {% for fav in favoritos %}
+        <div class="tarjeta-resultado">
+            <a href="{% url 'detalle_evento' fav.evento.id %}">
+                {{ fav.evento.nombre }} ({{ fav.evento.ciudad.nombre }})
+            </a>
+        </div>
+    {% empty %}
+        <p>No tienes eventos favoritos.</p>
+    {% endfor %}
+</div>
 {% endblock %}

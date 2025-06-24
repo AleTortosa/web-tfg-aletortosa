@@ -16,4 +16,6 @@ urlpatterns = [
     path('ciudades/', views.ciudades_view, name='ciudades'),
     path('ciudad/<int:ciudad_id>/eventos/', views.eventos_por_ciudad_view, name='eventos_por_ciudad'),
     path('evento/<int:evento_id>/', views.detalle_evento_view, name='detalle_evento'),
+    path('evento/<int:evento_id>/favorito/', views.toggle_favorito, name='toggle_favorito'),
+    path('favoritos/', views.favoritos_view, name='favoritos'),
 ]

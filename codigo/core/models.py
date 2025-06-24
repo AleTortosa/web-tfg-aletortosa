@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
 
 class Ciudad(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -58,3 +59,10 @@ class ResenaImagen(models.Model):
 
     def __str__(self):
         return f"Imagen de {self.resena}"
+    
+class Favorito(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('usuario', 'evento')

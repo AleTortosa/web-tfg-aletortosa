@@ -678,6 +678,15 @@ footer {
     display: block;
 }
 
+.evento-ciudad {
+    font-size: 1.25rem;   /* Puedes subir a 1.4rem si lo quieres aún más grande */
+    font-weight: 600;
+    color: var(--primario);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* Filtros avanzados para reseñas */
 .filtros-avanzados {
     background: #fafdff;
@@ -797,3 +806,29 @@ footer {
 }
 
 /* Fin Zona de reseñas */
+
+/* Zona de favoritos */
+.favorito-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    font-size: 2.2rem;
+    color: var(--secundario);
+    transition: color 0.2s, transform 0.15s;
+    margin-left: 18px;
+}
+.favorito-btn:hover {
+    color: var(--azul-alternativo);
+    transform: scale(1.15);
+}
+
+.detalle-evento-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 18px;
+
+}
+/* fin Zona de favoritos */
+

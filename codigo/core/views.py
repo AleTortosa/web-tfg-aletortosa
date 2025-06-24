@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from .models import Ciudad, Resena, Evento, Etiqueta
+from .models import Ciudad, Resena, Evento, Etiqueta, Favorito
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 def home(request):
@@ -146,7 +147,7 @@ def eventos_por_ciudad_view(request, ciudad_id):
     busca = request.GET.get('busca', '').strip()
     etiquetas_ids = request.GET.getlist('etiquetas')
     eventos = ciudad.evento_set.all()
-    etiquetas = Etiqueta.objects.all()  # <-- Añade esto
+    etiquetas = Etiqueta.objects.all()
 
     if busca:
         eventos = eventos.filter(nombre__icontains=busca)
@@ -157,15 +158,34 @@ def eventos_por_ciudad_view(request, ciudad_id):
         "ciudad": ciudad,
         "eventos": eventos,
         "busca": busca,
-        "etiquetas": etiquetas,  # <-- Añade esto
+        "etiquetas": etiquetas,
         "etiquetas_seleccionadas": etiquetas_ids,
     })
 
 def detalle_evento_view(request, evento_id):
-    from .models import Evento  # Asegúrate de importar Evento si no lo tienes arriba
     evento = get_object_or_404(Evento, id=evento_id)
     reseñas = evento.resena_set.all()
+    es_favorito = False
+    if request.user.is_authenticated:
+        es_favorito = Favorito.objects.filter(usuario=request.user, evento=evento).exists()
     return render(request, "detalle_evento.html", {
         "evento": evento,
-        "reseñas": reseñas
+        "reseñas": reseñas,
+        "es_favorito": es_favorito,
     })
+
+@login_required
+def toggle_favorito(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    favorito, created = Favorito.objects.get_or_create(usuario=request.user, evento=evento)
+    if not created:
+        favorito.delete()
+        es_favorito = False
+    else:
+        es_favorito = True
+    return JsonResponse({'es_favorito': es_favorito})
+
+@login_required
+def favoritos_view(request):
+    favoritos = Favorito.objects.filter(usuario=request.user).select_related('evento', 'evento__ciudad')
+    return render(request, "favoritos.html", {"favoritos": favoritos})

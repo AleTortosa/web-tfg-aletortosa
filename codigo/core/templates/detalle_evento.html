@@ -1,16 +1,50 @@
 {% extends 'base.html' %}
 {% block title %}{{ evento.nombre }}{% endblock %}
 {% block content %}
-<h2>{{ evento.nombre }}</h2>
-<p>Ciudad: {{ evento.ciudad.nombre }}</p>
-<h3>Reseñas</h3>
-<ul>
-    {% for resena in reseñas %}
-        <li>
-            {{ resena.usuario.username }}: {{ resena.descripcion }} ({{ resena.puntuacion }}/5)
-        </li>
-    {% empty %}
-        <li>No hay reseñas para este evento.</li>
-    {% endfor %}
-</ul>
+<div class="evento-detalle-card">
+    <div class="detalle-evento-header">
+        <h2>{{ evento.nombre }}</h2>
+        <button id="favorito-btn" class="favorito-btn" data-evento="{{ evento.id }}">
+            <i id="corazon" class="{% if es_favorito %}fas{% else %}far{% endif %} fa-heart"></i>
+        </button>
+    </div>
+    <div class="evento-info">
+        <span class="evento-ciudad"><i class="fas fa-map-marker-alt fa-lg"></i> {{ evento.ciudad.nombre }}</span>
+    </div>
+    <hr class="evento-separador">
+    <h3 class="evento-reseñas-titulo"><i class="fas fa-star"></i> Reseñas</h3>
+    <ul class="evento-reseñas-lista">
+        {% for resena in reseñas %}
+            <li>
+                <strong>{{ resena.usuario.username }}</strong>: {{ resena.descripcion }} 
+                <span class="evento-puntuacion">({{ resena.puntuacion }}/5)</span>
+            </li>
+        {% empty %}
+            <li>No hay reseñas para este evento.</li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+document.getElementById('favorito-btn').onclick = function() {
+    fetch("{% url 'toggle_favorito' evento.id %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        var corazon = document.getElementById('corazon');
+        if (data.es_favorito) {
+            corazon.classList.remove('far');
+            corazon.classList.add('fas');
+        } else {
+            corazon.classList.remove('fas');
+            corazon.classList.add('far');
+        }
+    });
+    return false;
+};
+</script>
 {% endblock %}
