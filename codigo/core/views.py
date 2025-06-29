@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from .models import Ciudad, Resena, Evento, Etiqueta, Favorito
+from .models import Ciudad, Resena, Evento, Etiqueta, Favorito, ResenaImagen
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -59,11 +59,38 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def favoritos_view(request):
-    return render(request, "favoritos.html")
-
 def explorar_view(request):
-    return render(request, "explorar.html")
+    busca = request.GET.get('busca', '').strip()
+    etiquetas_ids = request.GET.getlist('etiquetas')
+    etiquetas = Etiqueta.objects.all()
+
+    ciudades = []
+    eventos = Evento.objects.all().select_related('ciudad')
+
+    if etiquetas_ids:
+        eventos = eventos.filter(etiquetas__id__in=etiquetas_ids)
+        if busca:
+            eventos = eventos.filter(nombre__icontains=busca)
+        ciudades_destacadas = []
+        ciudades = []
+    else:
+        if not busca:
+            ciudades_destacadas = Ciudad.objects.all()[:6]
+        else:
+            ciudades_destacadas = []
+            ciudades = Ciudad.objects.filter(nombre__icontains=busca)
+            eventos = eventos.filter(nombre__icontains=busca)
+
+    eventos = eventos.distinct()
+
+    return render(request, "explorar.html", {
+        "ciudades": ciudades,
+        "eventos": eventos,
+        "etiquetas": etiquetas,
+        "etiquetas_seleccionadas": etiquetas_ids,
+        "busca": busca,
+        "ciudades_destacadas": ciudades_destacadas,
+    })
 
 @login_required
 def perfil_view(request):
@@ -101,37 +128,17 @@ def resena_detalle_view(request, resena_id):
 
 def resenas_view(request):
     busca = request.GET.get('busca', '').strip()
-    etiquetas_ids = request.GET.getlist('etiquetas')
-    etiquetas = Etiqueta.objects.all()
-
-    ciudades = []
-    eventos = Evento.objects.all().select_related('ciudad')
-
-    if etiquetas_ids:
-        # Si hay etiquetas seleccionadas, solo filtramos eventos por etiquetas (y opcionalmente por nombre)
-        eventos = eventos.filter(etiquetas__id__in=etiquetas_ids)
-        if busca:
-            eventos = eventos.filter(nombre__icontains=busca)
-        ciudades_destacadas = []
-        ciudades = []
-    else:
-        # Si no hay etiquetas, mostramos ciudades y eventos según búsqueda
-        if not busca:
-            ciudades_destacadas = Ciudad.objects.all()[:6]
-        else:
-            ciudades_destacadas = []
-            ciudades = Ciudad.objects.filter(nombre__icontains=busca)
-            eventos = eventos.filter(nombre__icontains=busca)
-
-    eventos = eventos.distinct()
-
+    resenas = Resena.objects.select_related('evento', 'evento__ciudad', 'usuario')
+    if busca:
+        resenas = resenas.filter(
+            Q(evento__nombre__icontains=busca) |
+            Q(evento__ciudad__nombre__icontains=busca) |
+            Q(usuario__username__icontains=busca)
+        )
+    resenas = resenas.order_by('-fecha')[:50]
     return render(request, "resenas.html", {
-        "ciudades": ciudades,
-        "eventos": eventos,
-        "etiquetas": etiquetas,
-        "etiquetas_seleccionadas": etiquetas_ids,
+        "resenas": resenas,
         "busca": busca,
-        "ciudades_destacadas": ciudades_destacadas,
     })
 
 def ciudades_view(request):
@@ -189,3 +196,67 @@ def toggle_favorito(request, evento_id):
 def favoritos_view(request):
     favoritos = Favorito.objects.filter(usuario=request.user).select_related('evento', 'evento__ciudad')
     return render(request, "favoritos.html", {"favoritos": favoritos})
+
+@login_required
+def crear_resena_view(request):
+    eventos = Evento.objects.filter(ciudad=request.user.ciudad_local)
+    error = ""
+    if request.method == "POST":
+        evento_id = request.POST.get("evento")
+        puntuacion = request.POST.get("puntuacion")
+        descripcion = request.POST.get("descripcion")
+        imagenes = request.FILES.getlist("imagenes")
+        try:
+            evento = Evento.objects.get(id=evento_id, ciudad=request.user.ciudad_local)
+            resena = Resena.objects.create(
+                usuario=request.user,
+                evento=evento,
+                puntuacion=puntuacion,
+                descripcion=descripcion
+            )
+            for img in imagenes:
+                ResenaImagen.objects.create(resena=resena, imagen=img)
+            return redirect('mis_resenas')
+        except Exception as e:
+            error = str(e)
+    return render(request, "crear_resena.html", {"eventos": eventos, "error": error})
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+
+@login_required
+def borrar_resena_view(request, resena_id):
+    resena = get_object_or_404(Resena, id=resena_id, usuario=request.user)
+    if request.method == "POST":
+        resena.delete()
+        return redirect('mis_resenas')
+    return redirect('resena_detalle', resena_id=resena_id)
+
+@login_required
+def editar_resena_view(request, resena_id):
+    resena = get_object_or_404(Resena, id=resena_id, usuario=request.user)
+    eventos = Evento.objects.filter(ciudad=request.user.ciudad_local)
+    error = ""
+    if request.method == "POST":
+        puntuacion = request.POST.get("puntuacion")
+        descripcion = request.POST.get("descripcion")
+        imagenes = request.FILES.getlist("imagenes")
+        # Borrar imágenes seleccionadas
+        ids_borrar = request.POST.getlist("borrar_imagenes")
+        if ids_borrar:
+            for img_id in ids_borrar:
+                img = resena.imagenes.filter(id=img_id).first()
+                if img:
+                    img.delete()
+        resena.puntuacion = puntuacion
+        resena.descripcion = descripcion
+        resena.save()
+        # Añadir nuevas imágenes si se suben
+        for img in imagenes:
+            ResenaImagen.objects.create(resena=resena, imagen=img)
+        return redirect('resena_detalle', resena_id=resena.id)
+    return render(request, "editar_resena.html", {
+        "resena": resena,
+        "eventos": eventos,
+        "error": error,
+    })

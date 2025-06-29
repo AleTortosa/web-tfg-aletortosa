@@ -18,6 +18,13 @@
             <p><strong>Descripción:</strong> {{ resena.descripcion }}</p>
             <p><strong>Fecha:</strong> {{ resena.fecha|date:"d/m/Y H:i" }}</p>
         </div>
+        <form action="{% url 'borrar_resena' resena.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-borrar-resena" onclick="return confirm('¿Seguro que quieres borrar esta reseña?');">
+                <i class="fas fa-trash-alt"></i>Borrar reseña
+            </button>
+            <p class="login-link"><a href="{% url 'editar_resena' resena.id %}">Editar reseña</a></p>
+        </form>
         <p class="login-link"><a href="{% url 'mis_resenas' %}">Volver a mis reseñas</a></p>
     </div>
 

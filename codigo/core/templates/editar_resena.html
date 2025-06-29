@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Editar reseña{% endblock %}
+{% block content %}
+<div class="login-section">
+    <div class="login-card" style="max-width: 500px;">
+        <h2>Editar reseña</h2>
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" class="login-form">
+            {% csrf_token %}
+            <label for="evento">Evento</label>
+            <input type="text" class="input-login" value="{{ resena.evento.nombre }} ({{ resena.evento.ciudad.nombre }})" disabled>
+
+            <label for="puntuacion">Puntuación</label>
+            <select name="puntuacion" id="puntuacion" class="input-login" required>
+                <option value="">Selecciona una puntuación</option>
+                {% for i in "12345"|make_list %}
+                    <option value="{{ i }}" {% if resena.puntuacion|stringformat:"s" == i %}selected{% endif %}>{{ i }} ⭐</option>
+                {% endfor %}
+            </select>
+
+            <label for="descripcion">Tu reseña</label>
+            <textarea name="descripcion" id="descripcion" class="input-login" rows="4" maxlength="1000" required>{{ resena.descripcion }}</textarea>
+
+            <label for="imagenes">Añadir imágenes (opcional)</label>
+            <input type="file" name="imagenes" id="imagenes" class="input-login" accept="image/*" multiple>
+
+            <div style="margin: 10px 0;">
+                <strong>Imágenes actuales:</strong><br>
+                {% for img in resena.imagenes.all %}
+                    <div style="display:inline-block; margin:4px; text-align:center;">
+                        <img src="{{ img.imagen.url }}" style="max-width:80px; max-height:80px; border-radius:6px; display:block;">
+                        <label style="font-size:0.9em;">
+                            <input type="checkbox" name="borrar_imagenes" value="{{ img.id }}">
+                            Borrar
+                        </label>
+                    </div>
+                {% empty %}
+                    <span style="color: #888;">Sin imágenes</span>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="login-btn" style="margin-top: 10px;">Guardar cambios</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

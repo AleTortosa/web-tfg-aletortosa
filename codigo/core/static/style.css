@@ -679,7 +679,7 @@ footer {
 }
 
 .evento-ciudad {
-    font-size: 1.25rem;   /* Puedes subir a 1.4rem si lo quieres aún más grande */
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--primario);
     display: flex;
@@ -832,3 +832,25 @@ footer {
 }
 /* fin Zona de favoritos */
 
+/* Botón borrar reseña */
+.btn-borrar-resena {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px rgba(231,76,60,0.10);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-borrar-resena:hover {
+    background: #b92d2b;
+    color: #fff;
+    transform: scale(1.04);
+}
+/* fin Botón borrar reseña */

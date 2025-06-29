@@ -1,5 +1,84 @@
 {% extends 'base.html' %}
-{% block title %}Perfil{% endblock %}
+{% block title %}Buscar{% endblock %}
 {% block content %}
-<h1> Explorar </h1>
+<form method="get" class="buscador-reseñas">
+    <input type="text" name="busca" placeholder="Buscar ciudad o evento..." value="{{ busca }}">
+    <button type="submit">Buscar</button>
+    <button type="button" onclick="desplegarFiltros()">Filtros avanzados</button>
+
+    <div id="filtros-avanzados" class="filtros-avanzados" style="display: none;">
+        <label><strong>Etiquetas:</strong></label><br>
+        {% for etiqueta in etiquetas %}
+            <label>
+                <input type="checkbox" name="etiquetas" value="{{ etiqueta.id }}"
+                    {% if etiqueta.id|stringformat:"s" in etiquetas_seleccionadas %}checked{% endif %}>
+                {{ etiqueta.nombre }}
+            </label><br>
+        {% endfor %}
+        <button type="submit">Aplicar filtros</button>
+        <button type="button" onclick="borrarFiltros()">Borrar filtros</button>
+    </div>
+</form>
+
+{% if not busca and ciudades_destacadas %}
+    <h3>Explora ciudades</h3>
+    <div class="tarjetas-ciudades">
+        {% for ciudad in ciudades_destacadas %}
+            <div class="tarjeta-ciudad">
+                <a href="{% url 'eventos_por_ciudad' ciudad.id %}">
+                    <strong>{{ ciudad.nombre }}</strong>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if ciudades %}
+    <div class="resultados-bloque">
+        <h3>Ciudades encontradas</h3>
+        <div class="tarjetas-resultados">
+            {% for ciudad in ciudades %}
+                <div class="tarjeta-resultado">
+                    <a href="{% url 'eventos_por_ciudad' ciudad.id %}">{{ ciudad.nombre }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% if eventos %}
+    <div class="resultados-bloque">
+        <h3>Eventos encontrados</h3>
+        <div class="tarjetas-resultados">
+            {% for evento in eventos %}
+                <div class="tarjeta-resultado">
+                    <a href="{% url 'detalle_evento' evento.id %}">{{ evento.nombre }} ({{ evento.ciudad.nombre }})</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% if not ciudades and not eventos and busca %}
+    <p>No se encontraron resultados para tu búsqueda.</p>
+{% endif %}
+
+<script>
+function desplegarFiltros() {
+    var filtros = document.getElementById('filtros-avanzados');
+    if (filtros.style.display === 'none' || filtros.style.display === '') {
+        filtros.style.display = 'block';
+    } else {
+        filtros.style.display = 'none';
+    }
+}
+
+function borrarFiltros() {
+    document.querySelectorAll('#filtros-avanzados input[type="checkbox"]').forEach(function(cb) {
+        cb.checked = false;
+    });
+    document.querySelector('input[name="busca"]').value = '';
+    document.querySelector('.buscador-reseñas').submit();
+}
+</script>
 {% endblock %}

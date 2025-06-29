@@ -18,4 +18,7 @@ urlpatterns = [
     path('evento/<int:evento_id>/', views.detalle_evento_view, name='detalle_evento'),
     path('evento/<int:evento_id>/favorito/', views.toggle_favorito, name='toggle_favorito'),
     path('favoritos/', views.favoritos_view, name='favoritos'),
+    path('resenas/crear/', views.crear_resena_view, name='crear_resena'),
+    path('resena/<int:resena_id>/borrar/', views.borrar_resena_view, name='borrar_resena'),
+    path('resena/<int:resena_id>/editar/', views.editar_resena_view, name='editar_resena'),
 ]

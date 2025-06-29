@@ -4,18 +4,24 @@
 {% block content %}
     <!-- Buscador -->
     <section class="buscador-home">
-        <form action="/buscar/" method="get">
-            <input type="text" name="q" placeholder="Busca una ciudad, lugar o experiencia..." class="input-buscador">
-            <button type="submit" class="btn-buscar">Buscar</button>
+        <form action="{% url 'resenas' %}" method="get" class="buscador-reseñas">
+            <input type="text" name="busca" placeholder="Buscar ciudad o evento..." value="">
+            <button type="submit">Buscar</button>
         </form>
     </section>
 
     <!-- Carrusel de imágenes -->
     <section class="carrusel-home">
         <div class="carrusel" id="carrusel">
-            <img src="{% static 'valencia.jpg' %}" alt="Valencia" class="carrusel-img active">
-            <img src="{% static 'madrid.jpg' %}" alt="Madrid" class="carrusel-img">
-            <img src="{% static 'granada.jpg' %}" alt="Granada" class="carrusel-img">
+            <a href="{% url 'eventos_por_ciudad' 1 %}">
+                <img src="{% static 'valencia.jpg' %}" alt="Valencia" class="carrusel-img active">
+            </a>
+            <a href="{% url 'eventos_por_ciudad' 3 %}">
+                <img src="{% static 'madrid.jpg' %}" alt="Madrid" class="carrusel-img">
+            </a>
+            <a href="{% url 'eventos_por_ciudad' 2 %}">
+                <img src="{% static 'granada.jpg' %}" alt="Granada" class="carrusel-img">
+            </a>
         </div>
         <div class="carrusel-titulo" id="carrusel-titulo">
             <span>Valencia</span>
@@ -27,6 +33,7 @@
         </div>
     </section>
 
+    <!-- Sección de noticias de momento inactivo 
     <section class="noticias-home">
         <div class="noticia">
             <img src="{% static 'valencia.jpg' %}" alt="Noticia 1">
@@ -51,6 +58,7 @@
         </div>
     </section>
 
+    -->
     
 
     <script>
@@ -82,7 +90,7 @@
         setInterval(() => {
             idx = (idx + 1) % imgs.length;
             showSlide(idx);
-        }, 4000);
+        }, 6000);
 
         showSlide(idx);
     </script>

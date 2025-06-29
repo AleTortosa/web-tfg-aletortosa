@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Escribir reseña{% endblock %}
+{% block content %}
+
+<div class="login-section">
+    <div class="login-card" style="max-width: 500px;">
+        <h2>Escribe tu reseña</h2>
+        <form method="post" enctype="multipart/form-data" class="login-form">
+            {% csrf_token %}
+            <label for="evento">Evento</label>
+            <select name="evento" id="evento" class="input-login" required>
+                <option value="">Selecciona un evento</option>
+                {% for evento in eventos %}
+                    <option value="{{ evento.id }}">{{ evento.nombre }} ({{ evento.ciudad.nombre }})</option>
+                {% endfor %}
+            </select>
+
+            <label for="puntuacion">Puntuación</label>
+            <select name="puntuacion" id="puntuacion" class="input-login" required>
+                <option value="">Selecciona una puntuación</option>
+                {% for i in "12345"|make_list %}
+                    <option value="{{ i }}">{{ i }} ⭐</option>
+                {% endfor %}
+            </select>
+
+            <label for="descripcion">Tu reseña</label>
+            <textarea name="descripcion" id="descripcion" class="input-login" rows="4" maxlength="1000" required placeholder="Cuéntanos tu experiencia..."></textarea>
+
+            <label for="imagenes">Imágenes (opcional)</label>
+            <input type="file" name="imagenes" id="imagenes" class="input-login" accept="image/*" multiple>
+
+            <button type="submit" class="login-btn" style="margin-top: 10px;">Publicar reseña</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
