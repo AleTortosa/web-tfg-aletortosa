@@ -854,3 +854,309 @@ footer {
     transform: scale(1.04);
 }
 /* fin Botón borrar reseña */
+
+/* Botones de la página de reseñas */
+.resenas-botones {
+    margin: 32px 0;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.resena-fecha {
+    color: #888;
+    margin-left: 10px;
+    font-size: 0.98em;
+}
+
+.btn-grande {
+    padding: 18px 32px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.10);
+    transition: background 0.2s, color 0.2s, transform 0.12s;
+    margin-bottom: 0;
+    margin-top: 0;
+    min-width: 180px;
+    text-align: center;
+    display: inline-block;
+}
+.btn-principal.btn-grande:hover,
+.btn-secundario.btn-grande:hover {
+    transform: scale(1.04);
+}
+
+.btn-resena {
+    background: var(--primario);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0;
+    margin-top: 0;
+    min-width: 180px;
+    text-align: center;
+}
+.btn-resena:hover {
+    background: var(--secundario);
+    color: #fff;
+}
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.evento-usuario-link {
+    color: var(--primario);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.evento-usuario-link:hover,
+.evento-usuario-link:focus {
+    color: var(--azul-alternativo); /* O pon tu azul preferido */
+    text-decoration: underline;
+}
+/* fin Botones de la página de reseñas */
+
+/* Estilo para el bloque de reporte de reseña */
+.motivo-box-reporte {
+    display: none;
+    margin-top: 16px;
+    background: #fafdff;
+    border: 1.5px solid var(--primario);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.07);
+    max-width: 420px;
+}
+.motivo-botones {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+}
+.btn-cancelar-reporte {
+    background: #e0f7fa;
+    color: var(--primario);
+}
+.btn-cancelar-reporte:hover {
+    background: #b2ebf2;
+    color: var(--secundario);
+}
+.mensajes-django {
+    margin: 18px auto 0 auto;
+    max-width: 500px;
+}
+
+.mensaje {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: 1.5px solid var(--primario);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+.mensaje.success {
+    background: #e0ffe0;
+    color: #217a2d;
+    border-color: #217a2d;
+}
+/* fin Estilo para el bloque de reporte de reseña */
+
+/* Lista de reseñas en detalle de evento */
+.evento-reseñas-lista {
+    margin: 18px 0 0 0;
+    padding-left: 0;
+    list-style: none;
+}
+.evento-reseñas-lista li {
+    background: #fafdff;
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(1,112,154,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.08rem;
+    position: relative;
+}
+.evento-resena-link {
+    color: var(--gris);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.evento-resena-link:hover {
+    color: var(--primario);
+    text-decoration: underline;
+}
+.evento-puntuacion {
+    color: var(--primario);
+    font-weight: 600;
+    margin-left: 8px;
+    font-size: 1.02em;
+}
+.evento-reportar-btn {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background 0.18s, color 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.evento-reportar-btn:hover {
+    background: var(--azul-alternativo);
+    color: var(--secundario);
+}
+
+/* Mejora para el bloque de reporte de reseña */
+.motivo-box-reporte {
+    display: none;
+    margin-top: 16px;
+    background: #fafdff;
+    border: 2px solid var(--azul-alternativo);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(1,112,154,0.09);
+    max-width: 420px;
+    animation: fadeIn 0.2s;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.motivo-botones {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+}
+.btn-cancelar-reporte {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+.btn-cancelar-reporte:hover {
+    background: var(--azul-alternativo);
+    color: var(--primario);
+}
+
+/* Mensajes Django */
+.mensajes-django {
+    margin: 18px auto 0 auto;
+    max-width: 500px;
+    z-index: 100;
+}
+.mensaje {
+    background: #e0f7fa;
+    color: var(--primario);
+    border: 1.5px solid var(--primario);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(1,112,154,0.08);
+    font-size: 1.08rem;
+}
+.mensaje.success {
+    background: #e0ffe0;
+    color: #217a2d;
+    border-color: #217a2d;
+}
+
+/* Perfil público */
+.perfil-publico-card {
+    background: linear-gradient(120deg, var(--fondo) 60%, #e0f7fa 100%);
+    border-radius: 28px;
+    box-shadow: 0 4px 24px rgba(1,112,154,0.11);
+    padding: 32px 48px 28px 48px;
+    width: 420px;
+    max-width: 98vw;
+    margin: 32px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid var(--primario);
+    position: relative;
+    overflow: hidden;
+}
+
+.perfil-publico-card h2 {
+    color: var(--primario);
+    font-size: 2rem;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #e0f7fa;
+}
+
+.perfil-publico-card p {
+    color: var(--gris);
+    font-size: 1.08rem;
+    margin-bottom: 10px;
+}
+
+.perfil-publico-card h3 {
+    color: var(--secundario);
+    font-size: 1.2rem;
+    margin: 18px 0 10px 0;
+    font-weight: 600;
+}
+
+.perfil-publico-card ul {
+    width: 100%;
+    padding-left: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.perfil-publico-card li {
+    background: #fafdff;
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(1,112,154,0.06);
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perfil-publico-card a {
+    color: var(--primario);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.perfil-publico-card a:hover {
+    color: var(--secundario);
+    text-decoration: underline;
+}

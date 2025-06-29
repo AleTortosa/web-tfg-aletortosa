@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ciudad, Etiqueta, Usuario, Evento, Resena, ResenaImagen
+from .models import Ciudad, Etiqueta, Usuario, Evento, Resena, ResenaImagen, ReporteResena
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 
@@ -43,6 +43,24 @@ class ResenaImagenInline(admin.TabularInline):
 class ResenaAdmin(admin.ModelAdmin):
     inlines = [ResenaImagenInline]
 
+@admin.register(ReporteResena)
+class ReporteResenaAdmin(admin.ModelAdmin):
+    list_display = ('resena', 'reportado_por', 'fecha', 'revisado')
+    list_filter = ('revisado',)
+    search_fields = ('resena__descripcion', 'reportado_por__username', 'motivo')
+    actions = ['marcar_como_revisado', 'eliminar_resena']
+
+    def marcar_como_revisado(self, request, queryset):
+        queryset.update(revisado=True)
+    marcar_como_revisado.short_description = "Marcar reportes seleccionados como revisados"
+
+    def eliminar_resena(self, request, queryset):
+        for reporte in queryset:
+            if reporte.resena:
+                reporte.resena.delete()
+    eliminar_resena.short_description = "Eliminar reseñas reportadas"
+
+admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Ciudad)
 admin.site.register(Etiqueta)
 admin.site.register(Evento, EventoAdmin)

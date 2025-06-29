@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de reseña{% endblock %}
+{% block content %}
+<div class="resena-publica-card">
+    <h2>Reseña de 
+        <a href="{% url 'perfil_publico' resena.usuario.id %}" class="evento-usuario-link">
+            {{ resena.usuario.username }} 
+        </a> 
+        sobre 
+        <a href="{% url 'detalle_evento' resena.evento.id %}" class="evento-usuario-link">
+            {{ resena.evento.nombre }}
+        </a>
+    </h2>
+    <p><strong>Puntuación:</strong> {{ resena.puntuacion }}/5</p>
+    <p><strong>Descripción:</strong> {{ resena.descripcion }}</p>
+    <p><strong>Fecha:</strong> {{ resena.fecha|date:"d/m/Y H:i" }}</p>
+    <form id="form-reporte" action="{% url 'reportar_resena' resena.id %}" method="post">
+        {% csrf_token %}
+        <button type="button" id="mostrar-motivo" class="btn-resena">
+            <i class="fas fa-flag"></i> Reportar reseña
+        </button>
+        <div id="motivo-box" class="motivo-box-reporte">
+            <textarea name="motivo" rows="2" placeholder="Motivo del reporte" class="input-login"></textarea>
+            <div class="motivo-botones">
+                <button type="submit" class="btn-resena">
+                    Enviar reporte
+                </button>
+                <button type="button" id="cancelar-reporte" class="btn-resena btn-cancelar-reporte">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </form>
+    {% if messages %}
+    <div class="mensajes-django">
+        {% for message in messages %}
+        <div class="mensaje {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+<script>
+document.getElementById('mostrar-motivo').onclick = function() {
+    document.getElementById('motivo-box').style.display = 'block';
+    this.style.display = 'none';
+};
+document.getElementById('cancelar-reporte').onclick = function() {
+    document.getElementById('motivo-box').style.display = 'none';
+    document.getElementById('mostrar-motivo').style.display = 'inline-block';
+};
+window.onload = function() {
+    document.getElementById('motivo-box').style.display = 'none';
+};
+</script>
+{% endblock %}

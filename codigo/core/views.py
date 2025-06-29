@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from .models import Ciudad, Resena, Evento, Etiqueta, Favorito, ResenaImagen
+from .models import Ciudad, Resena, Evento, Etiqueta, Favorito, ResenaImagen, ReporteResena
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 def home(request):
@@ -175,6 +176,7 @@ def detalle_evento_view(request, evento_id):
     es_favorito = False
     if request.user.is_authenticated:
         es_favorito = Favorito.objects.filter(usuario=request.user, evento=evento).exists()
+    puntuacion_media = reseñas.aggregate(Avg('puntuacion'))['puntuacion__avg']
     return render(request, "detalle_evento.html", {
         "evento": evento,
         "reseñas": reseñas,
@@ -260,3 +262,30 @@ def editar_resena_view(request, resena_id):
         "eventos": eventos,
         "error": error,
     })
+
+def perfil_publico(request, user_id):
+    User = get_user_model()
+    usuario = get_object_or_404(User, id=user_id)
+    resenas = usuario.resena_set.all()
+    return render(request, "perfil_publico.html", {"usuario": usuario, "resenas": resenas})
+
+def resena_publica_detalle(request, resena_id):
+    resena = get_object_or_404(Resena, id=resena_id)
+    return render(request, "resena_publica_detalle.html", {"resena": resena})
+
+def reportar_resena(request, resena_id):
+    if request.method == "POST":
+        messages.success(request, "¡Reseña reportada! Gracias por tu colaboración.")
+    return redirect('resena_publica_detalle', resena_id=resena_id)
+
+def reportar_resena(request, resena_id):
+    resena = get_object_or_404(Resena, id=resena_id)
+    if request.method == "POST":
+        motivo = request.POST.get("motivo", "")
+        ReporteResena.objects.create(
+            resena=resena,
+            reportado_por=request.user if request.user.is_authenticated else None,
+            motivo=motivo
+        )
+        messages.success(request, "¡Reseña reportada! El equipo de administración la revisará.")
+    return redirect('resena_publica_detalle', resena_id=resena_id)

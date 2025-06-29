@@ -21,4 +21,7 @@ urlpatterns = [
     path('resenas/crear/', views.crear_resena_view, name='crear_resena'),
     path('resena/<int:resena_id>/borrar/', views.borrar_resena_view, name='borrar_resena'),
     path('resena/<int:resena_id>/editar/', views.editar_resena_view, name='editar_resena'),
+    path('perfil/<int:user_id>/', views.perfil_publico, name='perfil_publico'),
+    path('resena/publica/<int:resena_id>/', views.resena_publica_detalle, name='resena_publica_detalle'),
+    path('resena/publica/<int:resena_id>/reportar/', views.reportar_resena, name='reportar_resena'),
 ]

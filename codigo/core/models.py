@@ -31,7 +31,8 @@ class Evento(models.Model):
     ciudad = models.ForeignKey(Ciudad, on_delete=models.CASCADE)
     ubicacion = models.CharField(max_length=255)
     imagen = models.ImageField(upload_to='eventos/', null=True, blank=True)
-    etiquetas = models.ManyToManyField(Etiqueta, blank=True)  # Relación con etiquetas
+    etiquetas = models.ManyToManyField(Etiqueta, blank=True)
+    mapa_src = models.TextField("Código src de Google Maps", blank=True, help_text="Pega aquí el src del iframe de Google Maps")
 
     def __str__(self):
         return f"{self.nombre} ({self.ciudad})"
@@ -66,3 +67,13 @@ class Favorito(models.Model):
 
     class Meta:
         unique_together = ('usuario', 'evento')
+
+class ReporteResena(models.Model):
+    resena = models.ForeignKey('Resena', on_delete=models.CASCADE, related_name='reportes')
+    reportado_por = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, blank=True)
+    motivo = models.TextField(blank=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    revisado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Reporte sobre reseña {self.resena.id} por {self.reportado_por}"

@@ -4,14 +4,28 @@
 
 <h1>Comunidad y Reseñas</h1>
 
-<div style="margin: 32px 0; display: flex; gap: 18px; flex-wrap: wrap;">
+<div class="resenas-botones">
     {% if user.is_authenticated %}
-        <a href="{% url 'crear_resena' %}" class="btn-principal">Escribir reseña</a>
-        <a href="{% url 'mis_resenas' %}" class="btn-secundario">Ver mis reseñas</a>
+        <a href="{% url 'crear_resena' %}" class="btn-resena">Escribir reseña</a>
+        <a href="{% url 'mis_resenas' %}" class="btn-resena">Ver mis reseñas</a>
     {% else %}
-        <button class="btn-principal" disabled style="opacity:0.6;cursor:not-allowed;">Escribir reseña (inicia sesión)</button>
-        <a href="{% url 'login' %}" class="btn-secundario">Inicia sesión para ver tus reseñas</a>
+        <a class="btn-resena btn-disabled">Escribir reseña (inicia sesión)</a>
+        <a href="{% url 'login' %}" class="btn-resena">Inicia sesión para ver tus reseñas</a>
     {% endif %}
 </div>
+
+<h2>Reseñas recientes</h2>
+<ul class="lista-resenas">
+    {% for resena in resenas %}
+        <li>
+            <a href="{% url 'resena_publica_detalle' resena.id %}">
+                {{ resena.evento.nombre }} ({{ resena.puntuacion }}/5) - {{ resena.usuario.username }}
+            </a>
+            <span class="resena-fecha">{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+        </li>
+    {% empty %}
+        <li>No hay reseñas recientes.</li>
+    {% endfor %}
+</ul>
 
 {% endblock %}

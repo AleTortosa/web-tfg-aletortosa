@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Perfil de {{ usuario.username }}{% endblock %}
+{% block content %}
+<div class="perfil-publico-card">
+    <h2>Perfil de {{ usuario.username }}</h2>
+    <p><strong>Ciudad:</strong> {{ usuario.ciudad_local }}</p>
+    <h3>Reseñas de este usuario:</h3>
+    <ul>
+        {% for resena in resenas %}
+            <li>
+                <a href="{% url 'resena_publica_detalle' resena.id %}">{{ resena.evento.nombre }}</a>
+                ({{ resena.puntuacion }}/5)
+            </li>
+        {% empty %}
+            <li>Este usuario no tiene reseñas.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

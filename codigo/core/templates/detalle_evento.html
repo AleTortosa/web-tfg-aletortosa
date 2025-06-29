@@ -10,14 +10,27 @@
     </div>
     <div class="evento-info">
         <span class="evento-ciudad"><i class="fas fa-map-marker-alt fa-lg"></i> {{ evento.ciudad.nombre }}</span>
+        <p><strong>Descripción:</strong> {{ evento.descripcion }}</p>
+        <p><strong>Dirección:</strong> {{ evento.direccion }}</p>
+        {% if evento.mapa_src %}
+            <iframe src="{{ evento.mapa_src }}" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        {% endif %}
+        <p><strong>Puntuación media:</strong> {{ puntuacion_media|default:"Sin puntuación" }}/5</p>
     </div>
     <hr class="evento-separador">
     <h3 class="evento-reseñas-titulo"><i class="fas fa-star"></i> Reseñas</h3>
     <ul class="evento-reseñas-lista">
         {% for resena in reseñas %}
             <li>
-                <strong>{{ resena.usuario.username }}</strong>: {{ resena.descripcion }} 
+                <a href="{% url 'perfil_publico' resena.usuario.id %}" class="evento-usuario-link" title="Ver perfil">
+                    <strong>{{ resena.usuario.username }}</strong>
+                </a>
+                : 
+                <a href="{% url 'resena_publica_detalle' resena.id %}" class="evento-resena-link" title="Ver detalle de reseña">
+                    {{ resena.descripcion|truncatechars:80 }}
+                </a>
                 <span class="evento-puntuacion">({{ resena.puntuacion }}/5)</span>
+                
             </li>
         {% empty %}
             <li>No hay reseñas para este evento.</li>
