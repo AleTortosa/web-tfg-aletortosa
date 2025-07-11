@@ -6,13 +6,18 @@
 
 <div class="resenas-botones">
     {% if user.is_authenticated %}
-        <a href="{% url 'crear_resena' %}" class="btn-resena">Escribir reseña</a>
+        {% if user.verificado %}
+            <a href="{% url 'crear_resena' %}" class="btn-resena">Escribir reseña</a>
+        {% else %}
+            <a class="btn-resena btn-disabled">Escribir reseña (verifica tu cuenta)</a>
+        {% endif %}
         <a href="{% url 'mis_resenas' %}" class="btn-resena">Ver mis reseñas</a>
     {% else %}
         <a class="btn-resena btn-disabled">Escribir reseña (inicia sesión)</a>
         <a href="{% url 'login' %}" class="btn-resena">Inicia sesión para ver tus reseñas</a>
     {% endif %}
 </div>
+
 
 <h2>Reseñas recientes</h2>
 <ul class="lista-resenas">

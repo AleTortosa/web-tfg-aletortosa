@@ -181,6 +181,7 @@ def detalle_evento_view(request, evento_id):
         "evento": evento,
         "reseñas": reseñas,
         "es_favorito": es_favorito,
+        "puntuacion_media": puntuacion_media,
     })
 
 @login_required
