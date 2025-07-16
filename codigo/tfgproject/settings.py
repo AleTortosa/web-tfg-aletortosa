@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,10 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!w=sg#2iurzefzk_w2d1g+2@%_=$t%ya4(xu&!t&6x&d@@d@b3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['web-tfg-aletortosa-production.up.railway.app', 'localhost', '127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-tfg-aletortosa-production.up.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # Application definition
 
@@ -133,3 +138,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
