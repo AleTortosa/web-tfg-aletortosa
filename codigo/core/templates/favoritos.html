@@ -1,16 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Favoritos{% endblock %}
 {% block content %}
-<h1>Mis eventos favoritos</h1>
-<div class="tarjetas-resultados">
-    {% for fav in favoritos %}
-        <div class="tarjeta-resultado">
-            <a href="{% url 'detalle_evento' fav.evento.id %}">
-                {{ fav.evento.nombre }} ({{ fav.evento.ciudad.nombre }})
-            </a>
+{% if user.is_authenticated %}
+    <h1>Mis eventos favoritos</h1>
+    <div class="tarjetas-resultados">
+        {% for fav in favoritos %}
+            <div class="tarjeta-resultado">
+                <a href="{% url 'detalle_evento' fav.evento.id %}">
+                    {{ fav.evento.nombre }} ({{ fav.evento.ciudad.nombre }})
+                </a>
+            </div>
+        {% empty %}
+            <p>No tienes eventos favoritos.</p>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="perfil-section">
+        <div class="perfil-card">
+            <h2>Mis eventos favoritos</h2>
+            <div class="perfil-info">
+                <i class="fas fa-user-lock fa-3x" style="color: var(--primario); display: block; text-align: center; margin-bottom: 20px;"></i>
+                <p style="text-align: center; font-size: 1.2rem; font-weight: 600;">Inicia sesión para ver tus favoritos</p>
+                <p style="text-align: center;">Para poder guardar y ver tus eventos favoritos, necesitas tener una cuenta e iniciar sesión.</p>
+                <div class="login-link">
+                    <a href="{% url 'login' %}">Iniciar sesión</a>
+                </div>
+            </div>
         </div>
-    {% empty %}
-        <p>No tienes eventos favoritos.</p>
-    {% endfor %}
-</div>
+    </div>
+{% endif %}
 {% endblock %}

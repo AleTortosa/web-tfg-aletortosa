@@ -195,9 +195,11 @@ def toggle_favorito(request, evento_id):
         es_favorito = True
     return JsonResponse({'es_favorito': es_favorito})
 
-@login_required
 def favoritos_view(request):
-    favoritos = Favorito.objects.filter(usuario=request.user).select_related('evento', 'evento__ciudad')
+    if request.user.is_authenticated:
+        favoritos = Favorito.objects.filter(usuario=request.user).select_related('evento', 'evento__ciudad')
+    else:
+        favoritos = []
     return render(request, "favoritos.html", {"favoritos": favoritos})
 
 @login_required

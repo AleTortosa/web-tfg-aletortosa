@@ -1,0 +1,169 @@
+% Contenidos del capítulo.
+% Las secciones presentadas son orientativas y no representan
+% necesariamente la organización que debe tener este capítulo.
+Las secciones presentadas son orientativas y no representan
+necesariamente la organización que debe tener este capítulo.
+\section{Implementación}
+%Presentar cómo se ha organizado el desarrollo de los proyectos
+%(capturas del IDE), trozos de código relevantes, cómo han quedado
+%implementadas las interfaces gráficas de usuario, etc.
+
+La aplicación desarrollada para el Trabajo de Fin de Grado es una plataforma web que permite la gestión y consulta de reseñas de lugares turísticos. El proyecto se compone de dos partes principales: el \textbf{frontend}, realizado con HTML y CSS para la estructura y el diseño visual, y el \textbf{backend}, implementado con el framework \textbf{Django} en Python, encargado de la lógica de negocio, la gestión de usuarios y la interacción con la base de datos.
+
+El desarrollo se ha realizado siguiendo buenas prácticas de organización y modularidad, separando claramente la lógica de presentación (HTML/CSS) de la lógica de negocio y persistencia (Django). Esto ha permitido crear una web moderna, funcional y fácilmente mantenible.
+
+El desarrollo de la aplicación se ha basado en el patrón \textbf{Modelo-Vista-Controlador} (MVC), que en Django se traduce en la organización en \textbf{Modelos}, \textbf{Vistas} y \textbf{Templates}. Esta estructura facilita la mantenibilidad y escalabilidad del proyecto.
+
+\subsection{Flujo de trabajo y organización}
+
+El proceso típico para añadir una nueva funcionalidad en la web ha sido:
+
+\begin{enumerate}
+    \item \textbf{Definir el modelo}: Se crea o modifica el modelo correspondiente en \texttt{models.py}, añadiendo los campos y relaciones necesarios.
+    \item \textbf{Migrar la base de datos}: Se ejecutan las migraciones para reflejar los cambios en la base de datos.
+    \item \textbf{Crear la vista}: Se implementa la lógica en \texttt{views.py}, donde se procesan las peticiones, se consulta la base de datos y se preparan los datos para la plantilla.
+    \item \textbf{Configurar la URL}: Se añade la ruta correspondiente en \texttt{urls.py} para que la funcionalidad sea accesible desde la web.
+    \item \textbf{Diseñar la plantilla}: Se crea o modifica el archivo HTML en la carpeta \texttt{templates/}, utilizando el sistema de plantillas de Django y extendiendo \texttt{base.html} para mantener la coherencia visual.
+    \item \textbf{Gestionar en el admin}: Si la funcionalidad requiere gestión interna, se registra el modelo en \texttt{admin.py} para poder administrarlo desde el panel de Django.
+\end{enumerate}
+
+\subsection{Modelo}
+
+El modelo representa la estructura de los datos. Por ejemplo, para las reseñas:
+
+\begin{lstlisting}[language=Python, caption={Modelo de Reseña}]
+class Resena(models.Model):
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    descripcion = models.TextField()
+    puntuacion = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    fecha = models.DateTimeField(auto_now_add=True)
+\end{lstlisting}
+
+Cada vez que se añade o modifica un modelo, se ejecuta \texttt{python manage.py makemigrations} y \texttt{python manage.py migrate} para actualizar la base de datos.
+
+\subsection{Vista}
+
+Las vistas gestionan la lógica de negocio y la interacción con los modelos. Por ejemplo, para mostrar el detalle de un evento y calcular la puntuación media de sus reseñas:
+
+\begin{lstlisting}[language=Python, caption={Vista de detalle de evento}]
+def detalle_evento_view(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    reseñas = evento.resena_set.all()
+    puntuacion_media = reseñas.aggregate(Avg('puntuacion'))['puntuacion__avg']
+    return render(request, "detalle_evento.html", {
+        "evento": evento,
+        "reseñas": reseñas,
+        "puntuacion_media": puntuacion_media,
+    })
+\end{lstlisting}
+
+\subsection{URLs}
+
+Las URLs conectan las vistas con las rutas accesibles desde el navegador. Por ejemplo:
+
+\begin{lstlisting}[language=Python, caption={Ruta para el detalle de evento}]
+path('evento/<int:evento_id>/', views.detalle_evento_view, name='detalle_evento'),
+\end{lstlisting}
+
+\subsection{Templates (HTML)}
+
+Las plantillas definen la interfaz gráfica. Se ha creado una plantilla principal \texttt{base.html} que incluye el menú, el footer y los estilos globales. Todas las demás plantillas extienden esta base para mantener la coherencia visual.
+
+\begin{lstlisting}[language=HTML, caption={Extensión de base.html}]
+{% extends 'base.html' %}
+{% block title %}Detalle de evento{% endblock %}
+{% block content %}
+<!-- contenido específico de la página -->
+{% endblock %}
+\end{lstlisting}
+
+Por ejemplo, la plantilla de reseñas muestra los botones y la lista de reseñas recientes:
+
+\begin{lstlisting}[language=HTML, caption={Fragmento de plantilla de reseñas}]
+<div class="resenas-botones">
+    {% if user.is_authenticated %}
+        {% if user.verificado %}
+            <a href="{% url 'crear_resena' %}" class="btn-resena">Escribir reseña</a>
+        {% else %}
+            <a class="btn-resena btn-disabled">Escribir reseña (verifica tu cuenta)</a>
+        {% endif %}
+        <a href="{% url 'mis_resenas' %}" class="btn-resena">Ver mis reseñas</a>
+    {% else %}
+        <a class="btn-resena btn-disabled">Escribir reseña (inicia sesión)</a>
+        <a href="{% url 'login' %}" class="btn-resena">Inicia sesión para ver tus reseñas</a>
+    {% endif %}
+</div>
+\end{lstlisting}
+
+\subsection{Zona de administración}
+
+El panel de administración de Django permite gestionar usuarios, eventos, reseñas y reportes. Se han personalizado los modelos en \texttt{admin.py} para mostrar información relevante y facilitar la gestión.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{admin_panel.png}
+    \caption{Panel de administración personalizado}
+\end{figure}
+
+\begin{lstlisting}[language=Python, caption={Registro de modelos en el admin}]
+@admin.register(ReporteResena)
+class ReporteResenaAdmin(admin.ModelAdmin):
+    list_display = ('resena', 'reportado_por', 'fecha', 'revisado')
+    actions = ['marcar_como_revisado', 'eliminar_resena']
+\end{lstlisting}
+
+\subsection{CSS y diseño visual}
+
+El diseño visual se ha realizado con CSS personalizado, definiendo variables de color y clases para botones, tarjetas y listas. Esto permite mantener una identidad visual clara y moderna en toda la web.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{detalle_evento.png}
+    \caption{Ejemplo de interfaz gráfica de detalle de evento}
+\end{figure}
+
+---
+
+\textbf{En resumen}, la implementación sigue el flujo MVC, con una estructura modular y una interfaz clara y moderna. El uso de Django ha permitido una gestión eficiente de usuarios, permisos y recursos, y la web es fácilmente extensible y mantenible.
+
+La interfaz gráfica se ha diseñado para ser intuitiva y visualmente atractiva, siguiendo los colores corporativos definidos en el CSS del proyecto.
+\section{Pruebas unitarias}
+Descripción de las pruebas que se han llevado a cabo para comprobar que el código
+desarrollado es correcto (JUnit, etc).
+\section{Pruebas funcionales}
+Descripción de las pruebas que se han llevado a cabo para comprobar que los casos de uso
+identificados funcionan correctamente.
+\section{Pruebas de rendimiento}
+Descripción de las pruebas de estrés realizadas para comprobar los tiempos de
+respuesta de la aplicación (según figuren en los requisitos).
+\section{Pruebas de usabilidad}
+Descripción de las pruebas que se han llevado a cabo con usuarios para determinar el
+nivel de usabilidad de la aplicación (que se hayan recogido en los requisitos).
+\section{Pruebas de seguridad}
+Descripción de las pruebas realizadas para comprobar que se cumplen las
+restricciones de autenticación y de autorización que se han descrito
+en los requisitos.
+
+
+\subsection{Requisitos funcionales}
+
+\begin{itemize}    
+    \item \textbf{RF1:} El sistema debe permitir a los usuarios registrarse e iniciar sesión con su usuario y contraseña.
+    \item \textbf{RF2:} El sistema debe permitir a los usuarios buscar lugares turísticos por nombre o ubicación.
+    \item \textbf{RF3:} El sistema debe permitir a los usuarios ver y aplicar filtros avanzados basados en las etiquetas asignadas a cada lugar turístico.
+    \item \textbf{RF4:} El sistema debe permitir a los usuarios locales reseñar lugares turísticos de su ciudad.
+    \item \textbf{RF5:} El sistema debe permitir a los usuarios locales editar o eliminar sus reseñas.
+    \item \textbf{RF6:} El sistema debe permitir a los usuarios ver la información detallada de un lugar turístico.
+    \item \textbf{RF7:} El sistema debe permitir a los usuarios locales agregar nuevas reseñas.
+    \item \textbf{RF8:} El sistema debe permitir a los usuarios ver las reseñas de otros usuarios.
+    \item \textbf{RF9:} El sistema debe permitir a los usuarios ver el perfil de otros usuarios.
+    \item \textbf{RF10:} El sistema debe permitir a los usuarios reportar reseñas inapropiadas.
+    \item \textbf{RF11:} El sistema debe permitir a los usuarios ver las reseñas más recientes.
+    \item \textbf{RF12:} El sistema debe permitir a los usuarios ver la puntuación media de un lugar turístico.
+    \item \textbf{RF13:} El sistema debe permitir a los usuarios ver la ubicación de un lugar turístico en un mapa.
+    \item \textbf{RF14:} El sistema debe permitir a los locales agregar una o varias imagenes opcionales a su reseña.
+    \item \textbf{RF15:} El sistema debe permitir a los moderadores gestionar las reseñas publicadas.
+    \item \textbf{RF16:} El sistema debe permitir a los administradores gestionar los usuarios del sistema.
+    \item \textbf{RF17:} El sistema debe permitir a los administradores gestionar los moderadores del sistema.
+\end{itemize}
